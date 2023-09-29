@@ -2,7 +2,6 @@ import { Formik } from 'formik';
 import { nanoid } from 'nanoid';
 import { FiUserPlus } from 'react-icons/fi';
 import * as Yup from 'yup';
-
 import {
   StyledForm,
   StyledField,
@@ -32,9 +31,21 @@ const ContactsSchema = Yup.object().shape({
 
 const initialValues = { name: '', number: '' };
 
-export const ContactsForm = ({ onAdd }) => {
+export const ContactsForm = () => {
+  const allcontacts = useSelector(state => state.contacts);
+  const dispatch = useDispatch();
+
   const handleSubmit = (values, { resetForm }) => {
-    onAdd({ ...values, id: nanoid() });
+    if (allcontacts.find(contact => contact.name === values.name)) {
+      return alert(`${values.name} is already in contacts`);
+    }
+
+    if (allcontacts.find(contact => contact.number === values.number)) {
+      return alert(`${values.number} is already in contacts`);
+    }
+
+    dispatch(addNewContact({ ...values, id: nanoid() }));
+
     resetForm();
   };
 
